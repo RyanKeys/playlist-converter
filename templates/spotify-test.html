@@ -1,5 +1,8 @@
 {% for playlist in playlists %}
 <h1>
-  <a href="{{playlist['external_urls']['spotify']}}">{{playlist['name']}}</a>
+  <a href="{{url_for('playlist_detail_view',playlist_id=playlist['id'])}}"
+    >{{playlist['name']}}</a
+  >
 </h1>
 {{playlist}} {% endfor %}
+<!--playlist['external_urls']['spotify']-->
