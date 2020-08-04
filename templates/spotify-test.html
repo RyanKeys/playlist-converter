@@ -1,1 +1,5 @@
-{{context}}
+{% for playlist in playlists %}
+<h1>
+  <a href="{{playlist['external_urls']['spotify']}}">{{playlist['name']}}</a>
+</h1>
+{{playlist}} {% endfor %}
