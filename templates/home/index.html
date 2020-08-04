@@ -1,19 +1,45 @@
-{% extends 'base.html' %} {% block content %}.
-<div class="row">
-  {% for playlist in playlists %}
-  <div class="col-sm-4">
-    <div class="card">
-      <div class="card-body">
-        <h1>
-          <a
-            href="{{url_for('playlist_detail_view',playlist_id=playlist['id'])}}"
-            >{{playlist['name']}}</a
-          >
-        </h1>
-        <p>{{playlist}}</p>
+{% extends 'base.html' %} {% block content %} {% if google_playlists %}
+<div class="container-fluid">
+  <h1>Google Playlists</h1>
+  <div class="row">
+    {% for g_playlist in google_playlists %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h1>
+            <a
+              href="{{url_for('google_playlist_detail_view',playlist_id=g_playlist['id'])}}"
+              >{{g_playlist['name']}}</a
+            >
+          </h1>
+          <p>{{g_playlist}}</p>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %} {% endblock %}
+</div>
+{% endif %}{% if spotify_playlists %}
+<div class="container-fluid">
+  <h1>Spotify Playlists</h1>
+  <div class="row">
+    {% for s_playlist in spotify_playlists %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h1>
+            <a
+              href="{{url_for('spotify_playlist_detail_view',playlist_id=s_playlist['id'])}}"
+              >{{s_playlist['name']}}</a
+            >
+          </h1>
+          <p>{{s_playlist}}</p>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+  {% endif %} {% endblock %}
   <!--playlist['external_urls']['spotify']-->
 </div>

@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row">
+  {% for song in playlist %}
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="card-title">{{song['track']['title']}}</h1>
+        <h3 class="card-title">{{song['track']['artist']}}</h3>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
