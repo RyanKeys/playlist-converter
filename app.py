@@ -11,18 +11,18 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope, client_id=env.CLIENT
                                                client_secret=env.CLIENT_SECRET, cache_path=os.getcwd(), redirect_uri='http://localhost:8888/callback'))
 
 
+@app.route('/login')
+def login():
+    return render_template('home/login.html')
+
+
 @app.route('/')
-def hello_world():
-    return render_template('index.html')
-
-
-@app.route('/spotify-auth')
-def spotify_auth_view():
+def index():
     playlists = sp.current_user_playlists()['items']
-    return render_template('spotify-test.html', playlists=playlists)
+    return render_template('home/index.html', playlists=playlists)
 
 
 @app.route('/playlist/<playlist_id>')
 def playlist_detail_view(playlist_id):
     playlist = sp.playlist_tracks(playlist_id)['items']
-    return render_template('playlist-detail.html', playlist=playlist)
+    return render_template('home/playlist-detail.html', playlist=playlist)
