@@ -46,19 +46,23 @@ def create_playlist_view():
         count += 1
 
     if request.method == 'POST':
+        tracks = []
         name = request.form['playlist_name']
         gplaylist = request.form
+        user = sp.current_user()['id']
+        new_playlist = sp.user_playlist_create(user=user, name=name)
         for playlist in playlists:
             if playlist['name'] in gplaylist:
                 songs = gmusic.get_playlist_contents(playlist['id'])
                 for song in songs:
-                    print(
-                        f"{song['track']['title']} by {song['track']['artist']}")
-        user = sp.current_user()['id']
-        new_playlist = sp.user_playlist_create(user=user, name=name)
-        # NEEDS TRACK ID FROM SPOTIFY BY SEARCHING SONG NAME
-        
-        spotify_id = sp.search()
-        sp.user_playlist_add_tracks(user)
+                    # print(f"{song['track']['title']} by {song['track']['artist']}")
+                    # NEEDS TRACK ID FROM SPOTIFY BY SEARCHING SONG NAME
+                    song_name = str(song['track']['title']).replace(" ", "%")
+                    spotify_id = sp.search(q=song_name, type="track", limit=1)[
+                        'tracks']['items'][0]['id']
+                    print(spotify_id)
+                    tracks.append(spotify_id)
+                    sp.user_playlist_add_tracks(
+                        user=user, playlist_id=playlist['id'], tracks=spotify_id)
         return redirect(location=new_playlist['owner']['external_urls']['spotify'], code=200)
     return render_template('home/create-playlist.html', playlists=playlists, count=count, available_playlists=available_playlists)
