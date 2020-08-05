@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container-fluid">
+  <h1>Create a Playlist</h1>
+  <form action="{{url_for('create_playlist_view')}}" method="POST">
+    <h3>Choose a playlist to copy:</h3>
+    <ul style="margin: 0; padding: 0;">
+      {% for playlist in range(0,count) %}
+      <li style="list-style-type: none;">
+        <input
+          name="{{available_playlists[playlist]}}"
+          type="radio"
+          value="playlist"
+        />
+        <label for="playlist">{{available_playlists[playlist]}}</label>
+      </li>
+      {% endfor %}
+    </ul>
+    <label for="playlist">Pick a name for the new playlist: </label><br />
+    <input type="text" id="playlist_name" name="playlist_name" /><br /><br />
+    <input type="submit" value="Submit" />
+  </form>
+</div>
+{% endblock %}
