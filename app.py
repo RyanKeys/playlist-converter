@@ -55,8 +55,6 @@ def create_playlist_view():
             if playlist['name'] in gplaylist:
                 songs = gmusic.get_playlist_contents(playlist['id'])
                 for song in songs:
-                    # print(f"{song['track']['title']} by {song['track']['artist']}")
-                    # NEEDS TRACK ID FROM SPOTIFY BY SEARCHING SONG NAME
                     song_name = str(song['track']['title']).replace(" ", "%")
                     spotify_id = sp.search(q=song_name, type="track", limit=1)[
                         'tracks']['items'][0]['id']
