@@ -36,7 +36,6 @@ def session_cache_path(cache):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     return render_template('home/login.html')
 
 
