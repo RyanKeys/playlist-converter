@@ -1,4 +1,4 @@
-{% block content %}
+{% extends 'base.html'} {% block content %}
 <form action="{{url_for('index')}}" method="POST">
   <input type="email" name="email" id="email" />
   <input type="text" name="password" id="password" />
