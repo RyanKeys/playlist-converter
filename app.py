@@ -41,7 +41,7 @@ def login():
         password = request.form['password']
         print(email, password)
         print("logged in")
-        mc.login(email, password, Mobileclient.FROM_MAC_ADDRESS)
+        mc.login(email, password, "A683E7364B32")
         return redirect(url_for('index'))
     return render_template('home/login.html')
 
