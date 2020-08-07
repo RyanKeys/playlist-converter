@@ -1,3 +1,7 @@
 {% block content %}
-  <a href="{{url_for('spotify_auth_view')}}">Spotify Test</a>
+<form action="{{url_for('index')}}" method="POST">
+  <input type="email" name="email" id="email" />
+  <input type="text" name="password" id="password" />
+  <button type="submit">Log in to Google Play</button>
+</form>
 {% endblock %}
