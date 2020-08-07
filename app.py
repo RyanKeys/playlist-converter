@@ -18,7 +18,6 @@ import os
 from gmusicapi import Mobileclient
 import gmusicapi
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -60,8 +59,11 @@ def index():
                                                cache_path=session_cache_path(
                                                    caches_folder),
                                                show_dialog=True)
-
-    google_playlists = mc.get_all_playlists()
+    if gmusicapi.exceptions.NotLoggedIn:
+        google_playlists = None
+        pass
+    else:
+        google_playlists = mc.get_all_playlists()
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
