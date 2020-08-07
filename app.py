@@ -17,7 +17,6 @@ from flask import Flask, session, request, redirect, render_template, url_for
 import os
 from gmusicapi import Mobileclient
 import gmusicapi
-import env
 
 
 app = Flask(__name__)
