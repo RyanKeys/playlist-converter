@@ -139,7 +139,8 @@ def get_playlist_contents(playlist_id):
 
 @app.route('/create_spotify_playlist', methods=['POST', 'GET'])
 def create_playlist_view():
-
+    if gmusicapi.exceptions.NotLoggedIn:
+        return redirect(url_for('index'))
     playlists = mc.get_all_playlists()
 
     auth_manager = spotipy.oauth2.SpotifyOAuth(
