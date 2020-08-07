@@ -58,8 +58,10 @@ def index():
                                                cache_path=session_cache_path(
                                                    caches_folder),
                                                show_dialog=True)
-
-    google_playlists = mc.get_all_playlists()
+    if gmusicapi.exceptions.NotLoggedIn:
+        google_playlists = None
+    else:
+        google_playlists = mc.get_all_playlists()
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
