@@ -8,7 +8,7 @@ TODO Prerequisites
     export SPOTIPY_CLIENT_SECRET=client_secret_here
     export SPOTIPY_REDIRECT_URI='http://127.0.0.1:8080' // must contain a port
     // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
-   
+
 """
 import uuid
 import spotipy
@@ -36,18 +36,18 @@ def session_cache_path(cache):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        print(email, password)
+        print("logged in")
+        mc.login(email, password, Mobileclient.FROM_MAC_ADDRESS)
+        return redirect(url_for('index'))
     return render_template('home/login.html')
 
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        print(email, password)
-        mc.login(email, password, Mobileclient.FROM_MAC_ADDRESS)
-        print("logged in")
-        return redirect(url_for('index'))
 
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
@@ -58,11 +58,8 @@ def index():
                                                cache_path=session_cache_path(
                                                    caches_folder),
                                                show_dialog=True)
-    if gmusicapi.exceptions.NotLoggedIn:
-        google_playlists = None
-        pass
-    else:
-        google_playlists = mc.get_all_playlists()
+
+    google_playlists = mc.get_all_playlists()
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
