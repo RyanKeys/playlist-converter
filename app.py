@@ -19,9 +19,7 @@ from gmusicapi import Mobileclient
 import gmusicapi
 import env
 
-os.environ['SPOTIFY_CLIENT_ID'] = env.S_CLIENT_ID
-os.environ['SPOTIFY_CLIENT_SECRET'] = env.S_CLIENT_SECRET
-os.environ['REDIRECT_URI'] = 'https://whispering-gorge-89694.herokuapp.com/'
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
