@@ -10,6 +10,7 @@ TODO Prerequisites
     // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
 
 """
+
 import uuid
 import spotipy
 from flask_session import Session
@@ -39,8 +40,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(email, password)
-        print("logged in")
+        print(f"{email} logged in from IP: {request.remote_addr}")
         mc.login(email, password, "A683E7364B32")
         return redirect(url_for('index'))
     return render_template('home/login.html')
@@ -48,20 +48,20 @@ def login():
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    if gmusicapi.exceptions.AlreadyLoggedIn:
+        pass
+    elif gmusicapi.exceptions.NotLoggedIn:
+        return redirect(url_for('login'))
 
     if not session.get('uuid'):
         # Step 1. Visitor is unknown, give random ID
         session['uuid'] = str(uuid.uuid4())
         return redirect(url_for('login'))
 
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-public',
                                                cache_path=session_cache_path(
                                                    caches_folder),
                                                show_dialog=True)
-    if gmusicapi.exceptions.NotLoggedIn:
-        google_playlists = None
-    else:
-        google_playlists = mc.get_all_playlists()
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
@@ -73,6 +73,7 @@ def index():
         auth_url = auth_manager.get_authorize_url()
         return redirect(auth_url)
 
+    google_playlists = mc.get_all_playlists()
     # Step 4. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     spotify_playlists = spotify.current_user_playlists()['items']
@@ -81,16 +82,20 @@ def index():
 
 @app.route('/logout')
 def logout():
-    os.remove(session_cache_path(caches_folder))
     mc.logout()
-    session.clear()
-    try:
-        # Remove the CACHE file (.cache-test) so that a new user can authorize.
+    if FileNotFoundError:
+        return redirect(url_for('login'))
+
+    else:
         os.remove(session_cache_path(caches_folder))
-    except OSError as e:
-        print("Error: %s - %s." % (e.filename, e.strerror))
-    finally:
-        return redirect('/')
+        session.clear()
+        try:
+            # Remove the CACHE file (.cache-test) so that a new user can authorize.
+            os.remove(session_cache_path(caches_folder))
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
+        finally:
+            return redirect('/')
 
 
 @app.route('/playlists')
@@ -139,9 +144,11 @@ def get_playlist_contents(playlist_id):
 
 @app.route('/create_spotify_playlist', methods=['POST', 'GET'])
 def create_playlist_view():
-    if gmusicapi.exceptions.NotLoggedIn:
-        return redirect(url_for('index'))
-    playlists = mc.get_all_playlists()
+    if gmusicapi.exceptions.AlreadyLoggedIn:
+        playlists = mc.get_all_playlists()
+
+    elif gmusicapi.exceptions.NotLoggedIn:
+        return redirect(url_for('login'))
 
     auth_manager = spotipy.oauth2.SpotifyOAuth(
         cache_path=session_cache_path(caches_folder))
